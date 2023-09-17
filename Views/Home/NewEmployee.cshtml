@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Çalışan Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $("#btnSave").click(function(){
+
+                var FirstName = $('#firstname').val();
+                var LastName = $('#lastname').val();
+                var Title = $('#title').val();
+                var TitleOfCourtesy = $('#titleofcourtesy').val();
+                var BirthDate = moment($("#birthdate").val(), 'DD-MM-YYYY').format('YYYY-MM-DDTHH:mm:ss');
+                var HireDate = moment($("#hiredate").val(), 'DD-MM-YYYY').format('YYYY-MM-DDTHH:mm:ss');
+                var Country = $('#country').val();
+                var City = $('#city').val();
+                var Region = $('#region').val();
+                var Address = $('#address').val();
+                var PostalCode = $('#postalcode').val();
+                var Phone = $('#phone').val();
+                var Notes = $('#notes').val();
+
+                var modelData = { FirstName, LastName, Title, TitleOfCourtesy, BirthDate, HireDate, Country, City, Region, Address, PostalCode, Phone, Notes };
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/AddEmployee", // Controller ve Action adınıza göre ayarlayın
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(modelData),
+                    dataType: "json",
+                    success: function (result) {
+                        // Başarılı bir şekilde sonuç alındığında yapılacak işlemler
+                        if (result.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Başarılı",
+                                text: "Yeni çalışan başarıyla eklendi!",
+                            }).then(function () {
+                                // Başarılı mesaj gösterildikten sonra yönlendirme yapabilirsiniz
+                                window.location.href = "/Home/Index";
+                            });
+                        } 
+                    }
+                });
+            });
+       
+
+
+
+        });
+    </script>
+}
+<div class="main-content">
+
+    <div class="section__content section__content--p30">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="card" style="width:100%">
+                    <div class="card-header">
+                        <h3>Yeni Çalışan</h3>
+                    </div>
+                    <div class="card-body card-block">
+                        <form action="" method="post" class="">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nf-email" class=" form-control-label">Ad</label>
+                                    <input type="text" id="firstname" name="firstname" placeholder="" class="form-control">
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="nf-password" class=" form-control-label">Soyad</label>
+                                    <input type="text" id="lastname" name="lastname" placeholder="" class="form-control">
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nf-email" class=" form-control-label">Unvan</label>
+                                    <input type="text" id="title" name="title" placeholder="" class="form-control">
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="nf-password" class=" form-control-label">Hitap Şekli</label>
+                                    <input type="text" id="titleofcourtesy" name="titleofcourtesy" placeholder="" class="form-control">
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nf-email" class=" form-control-label">Doğum Tarihi</label>
+                                    <input type="text" id="birthdate" name="birthdate" placeholder="" class="form-control datepicker">
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="nf-password" class=" form-control-label">İşe Giriş Tarih</label>
+                                    <input type="text" id="hiredate" name="hiredate" placeholder="" class="form-control">
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nf-email" class=" form-control-label">Ülke</label>
+                                    <input type="text" id="country" name="country" placeholder="" class="form-control">
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="nf-password" class=" form-control-label">İl</label>
+                                    <input type="text" id="city" name="city" placeholder="" class="form-control">
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nf-email" class=" form-control-label">Bölge</label>
+                                    <input type="text" id="region" name="region" placeholder="" class="form-control">
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="nf-password" class=" form-control-label">Adres</label>
+                                    <input type="text" id="address" name="address" placeholder="" class="form-control">
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nf-email" class=" form-control-label">Posta Kodu</label>
+                                    <input type="text" id="postalcode" name="postalcode" placeholder="" class="form-control">
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="nf-password" class=" form-control-label">Telefon</label>
+                                    <input type="text" id="phone" name="phone" placeholder="" class="form-control">
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="nf-email" class=" form-control-label">Açıklama</label>
+                                    <textarea class="form-control" id="notes" rows="3"></textarea>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <button id="btnSave" class="btn btn-success float-right">
+                            <i class="fa fa-dot-circle-o"></i> Kaydet
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

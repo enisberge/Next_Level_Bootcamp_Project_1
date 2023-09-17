@@ -1,0 +1,178 @@
+﻿@{
+    ViewData["Title"] = "Çalışanlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $("#employeeTable tbody").on("click", "a#orderDetails", function () {
+                var employeeId = parseInt($(this).attr("data-id"));
+                var employeeName = $(this).attr("data-fullname");
+
+                $('#orderModal').modal('show');
+                $("#largeModalLabel").text('Sipariş Detayı - ' + employeeName);
+
+                $(document).ready(function () {
+                    $('#orderTable').DataTable({
+                        "lengthMenu": [5, 10, 25],
+                        language: {
+                            url: '../lib/language/tr.json',
+                        },
+                        "pageLength": 5,
+                        ajax: {
+                            url: '/Home/GetOrdersByEmployeeId', // JSON verilerini çekecek metodu belirtin
+                            type: 'POST', // HTTP POST isteği
+                            data: function (d) {
+                                d.employeeId = employeeId; // İstekte göndermek istediğiniz parametreleri ayarlayın
+                            },
+                            dataSrc: '' // JSON verisinin kök düzeyini belirtin
+                        },
+                        columns: [
+                            { data: 'orderId' },
+                            { data: 'shippedDate' },
+                            { data: 'shipCountry' }
+                        ]
+                    });
+                });
+                $(".btnClose").click(function () {
+
+                    $('#orderTable').DataTable().destroy();
+                });
+
+            });
+
+
+            $('#employeeTable').DataTable({
+                "order": [[0, "desc"]],
+                language: {
+                    url: '../lib/language/tr.json',
+                },
+                "ajax": {
+                    "url": "/Home/GetEmployees", // Veri çekmek için kullanacağınız URL
+                    "type": "GET", // HTTP isteği türü (GET veya POST)
+                    "dataSrc": "" // Verilerinizi içeren JSON nesnesinin kökü (eğer JSON veri dizisi içinde ise boş bırakabilirsiniz)
+                },
+                "columns": [
+                    {"data":"employeeId"},
+                    { "data": "firstName" },
+                    { "data": "lastName" },
+                    { "data": "title" },
+                    {
+                        "data": "employeeId", className: "text-center text-nowrap", render: function (data, type, row) {
+                            return "<a  href='javascript:;' data-fullname='" + row.firstName + ' ' + row.lastName + "'  data-id='" + data + "' id='orderDetails' class='btn btn-outline-success btn-sm'><i class='fa fa-magic'></i>&nbsp; Sipariş Detayı</a>";
+                        }
+                    }
+                ]
+            });
+
+            $.ajax({
+                url: '/Home/GetEmployees', // GetEmployees metodu için doğru URL'yi belirtin
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data); // Veriyi konsola yazdırın
+                },
+                error: function (error) {
+                    console.error("Ajax hatası:", error); // Hata mesajını konsola yazdırın
+                }
+            });
+
+        });
+
+
+    </script>
+
+}
+@*Burası Kullanacağım Tablo*@
+<div class="main-content">
+
+    <div class="section__content section__content--p30">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="card" style="width:100%">
+                    <div class="card-header">
+                       <div class="row">
+                            <div class="col-md-8">
+                                <h3>Çalışanlar</h3>
+                            </div>
+                            <div class="col-md-4">
+                                <a asp-action="NewEmployee" asp-controller="Home"  class="btn btn-primary float-right"> <i class="zmdi zmdi-plus"></i>&nbsp;Çalışan Ekle</a>
+                            </div>
+                       </div>
+                        
+                    </div>
+                    <div class="card-body card-block">
+
+                        <!-- DATA TABLE-->
+                        <div class="table-responsive">
+                            <table id="employeeTable" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Ad</th>
+                                        <th>Soyad</th>
+                                        <th>Ünvan</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- END DATA TABLE-->
+
+
+                    </div>
+                </div>
+            </div>
+            @*Burası Kullanacağım Tablo*@
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="copyright">
+                        <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- modal large -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="largeModalLabel">Sipariş Detayı</h5>
+                <button type="button" class="close btnClose" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- DATA TABLE -->
+                <div class="table-responsive table-responsive-data2">
+                    <table id="orderTable" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Sevkiyat Tarihi</th>
+                                <th>Ülke</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btnClose" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal large -->
