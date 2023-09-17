@@ -31,7 +31,14 @@
                         },
                         columns: [
                             { data: 'orderId' },
-                            { data: 'shippedDate' },
+                            {
+                                "data": "shippedDate", className: "text-center", render: function (data, type, row) {
+                                    if (data != null && data != "")
+                                        return moment(data).format("DD.MM.YYYY");
+                                    else
+                                        return "";
+                                }
+                            },
                             { data: 'shipCountry' }
                         ]
                     });
